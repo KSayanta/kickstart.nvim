@@ -207,16 +207,14 @@ vim.keymap.set('i', 'jk', '<Esc>', { desc = 'Exit insert mode with jk' })
 vim.keymap.set('n', '<leader>=', '<C-a>', { desc = 'Increment number under cursor' })
 vim.keymap.set('n', '<leader>-', '<C-x>', { desc = 'Decrement number under cursor' })
 -- Window management
-vim.keymap.set('n', '<leader>sv', '<C-w>v', { desc = 'Split window vertically' })
-vim.keymap.set('n', '<leader>sh', '<C-w>s', { desc = 'Split window horizontally' })
-vim.keymap.set('n', '<leader>se', '<C-w>=', { desc = 'Make splits equal size' })
-vim.keymap.set('n', '<leader>sx', '<cmd>close<CR>', { desc = 'Close current split' })
+vim.keymap.set('n', '<leader>wv', '<C-w>v', { desc = 'Split [W]indow [V]ertically' })
+vim.keymap.set('n', '<leader>wh', '<C-w>s', { desc = 'Split [W]indow [H]orizontally' })
+vim.keymap.set('n', '<leader>we', '<C-w>=', { desc = 'Split [W]indow [E]qual size' })
+vim.keymap.set('n', '<leader>wc', '<cmd>close<CR>', { desc = 'Split [W]indow [C]lose' })
 -- Tab management
-vim.keymap.set('n', '<leader>to', '<cmd>tabnew<CR>', { desc = 'Open new tab' })
-vim.keymap.set('n', '<leader>tx', '<cmd>tabclose<CR>', { desc = 'Close current tab' })
-vim.keymap.set('n', '<leader>tn', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
-vim.keymap.set('n', '<leader>tp', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
-vim.keymap.set('n', '<leader>tf', '<cmd>tabnew %<CR>', { desc = 'Open current buffer in new tab' })
+vim.keymap.set('n', '<leader>tn', '<cmd>tabnew<CR>', { desc = 'Tab [N]ew' })
+vim.keymap.set('n', '<leader>tc', '<cmd>tabclose<CR>', { desc = 'Tab [C]lose' })
+vim.keymap.set('n', '<leader>to', '<cmd>tabnew %<CR>', { desc = 'Tab [O]pen current buffer' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -275,11 +273,12 @@ require('lazy').setup({
     'lewis6991/gitsigns.nvim',
     opts = {
       signs = {
-        add = { text = '+' },
-        change = { text = '~' },
+        add = { text = '┃' },
+        change = { text = '┃' },
         delete = { text = '_' },
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
+        untracked = { text = '┆' },
       },
     },
   },
@@ -347,8 +346,10 @@ require('lazy').setup({
         { '<leader>r', group = '[R]ename' },
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]orkspace' },
-        { '<leader>t', group = '[T]oggle' },
+        { '<leader>t', group = '[T]oggle / [T]ab' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>n', group = '[N]o [H]ighlight' },
+        { '<leader>x', group = '[X] Trouble List' },
       },
     },
   },
@@ -653,6 +654,8 @@ require('lazy').setup({
         cssls = {},
         cssmodules_ls = {},
 
+        emmet_ls = {},
+
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
@@ -684,6 +687,12 @@ require('lazy').setup({
         'stylua', -- Used to format Lua code
         'prettier', -- Used to format HTML, CSS, Javascript
         'prettierd', -- Used to format Javascript
+
+        'eslint_d', -- Used to lint Javascript
+        'markdownlint', -- Used to lint Markdown
+        'stylelint', -- Used to lint CSS
+        'jsonlint', -- Used to lint JSON
+        'vale', -- Used to lint text
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -767,12 +776,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
@@ -946,6 +955,18 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = 'gnn',
+          node_incremental = 'grn',
+          scope_incremental = 'grc',
+          node_decremental = 'grm',
+        },
+      },
+      autotag = {
+        enable = true,
+      },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
@@ -966,10 +987,10 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
