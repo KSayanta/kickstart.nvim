@@ -93,6 +93,9 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- Codeium auto hide flag
+vim.g.codeium_cmp_hide = true
+
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
@@ -168,6 +171,14 @@ vim.opt.smartcase = true -- Case-sensitive if expression contains a capital lett
 
 vim.opt.backspace = 'start,eol,indent' -- Configure backspace so it acts as it should act
 
+-- cmd line
+vim.opt.showcmd = false
+-- vim.opt.laststatus = 3
+vim.opt.cmdheight = 0
+
+-- Smooth scroll
+vim.opt.smoothscroll = true
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -202,19 +213,57 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower win
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- FIXME: My Keybinds
-vim.keymap.set('i', 'jk', '<Esc>', { desc = 'Exit insert mode with jk' })
+
+-- Search current word
+local searching_brave = function()
+  vim.fn.system { 'xdg-open', 'https://search.brave.com/search?q=' .. vim.fn.expand '<cword>' }
+end
+vim.keymap.set('n', '<leader>?', searching_brave, { noremap = true, silent = true, desc = 'Search Current Word on Brave Search' })
+
 -- Increment/decrement numbers
 vim.keymap.set('n', '<leader>=', '<C-a>', { desc = 'Increment number under cursor' })
 vim.keymap.set('n', '<leader>-', '<C-x>', { desc = 'Decrement number under cursor' })
+
 -- Window management
 vim.keymap.set('n', '<leader>wv', '<C-w>v', { desc = 'Split [W]indow [V]ertically' })
 vim.keymap.set('n', '<leader>wh', '<C-w>s', { desc = 'Split [W]indow [H]orizontally' })
 vim.keymap.set('n', '<leader>we', '<C-w>=', { desc = 'Split [W]indow [E]qual size' })
-vim.keymap.set('n', '<leader>wc', '<cmd>close<CR>', { desc = 'Split [W]indow [C]lose' })
+vim.keymap.set('n', '<leader>wq', '<cmd>close<CR>', { desc = 'Split [W]indow [Q]lose' })
+
 -- Tab management
 vim.keymap.set('n', '<leader>tn', '<cmd>tabnew<CR>', { desc = 'Tab [N]ew' })
 vim.keymap.set('n', '<leader>tc', '<cmd>tabclose<CR>', { desc = 'Tab [C]lose' })
 vim.keymap.set('n', '<leader>to', '<cmd>tabnew %<CR>', { desc = 'Tab [O]pen current buffer' })
+
+-- Buffer management
+vim.keymap.set('n', '<leader>bf', '<cmd>bfirst<cr>', { desc = 'First Buffer' })
+vim.keymap.set('n', '<leader>ba', '<cmd>blast<cr>', { desc = 'Last Buffer' })
+vim.keymap.set('n', '<leader>b<tab>', '<cmd>tabnew %<cr>', { desc = 'Current Buffer in New Tab' })
+
+-- Telescope
+vim.keymap.set('n', '<leader>st', '<cmd>TodoTelescope<CR>', { desc = '[S]earch [T]odos' })
+
+-- Identation
+vim.keymap.set('n', '<', '<<', { desc = 'De-indent' })
+vim.keymap.set('n', '>', '>>', { desc = 'Indent' })
+
+-- End of the word backwards
+vim.keymap.set('n', 'E', 'ge')
+
+-- Cursor navigation on insert mode
+vim.keymap.set('i', '<M-h>', '<left>', { desc = 'Move Cursor Left' })
+vim.keymap.set('i', '<M-l>', '<right>', { desc = 'Move Cursor Left' })
+vim.keymap.set('i', '<M-j>', '<down>', { desc = 'Move Cursor Left' })
+vim.keymap.set('i', '<M-k>', '<up>', { desc = 'Move Cursor Left' })
+vim.keymap.set('i', '<C-a>', '<Home>', { desc = 'Start Of Line' })
+vim.keymap.set('i', '<C-e>', '<End>', { desc = 'End Of Line' })
+
+-- Empty Line
+vim.keymap.set('n', 'gO', "<Cmd>call append(line('.') - 1, repeat([''], v:count1))<CR>", { desc = 'Empty Line Above' })
+vim.keymap.set('n', 'go', "<Cmd>call append(line('.'), repeat([''], v:count1))<CR>", { desc = 'Empty Line Below' })
+
+-- U for redo
+vim.keymap.set('n', 'U', '<C-r>', { desc = 'Redo' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -347,6 +396,7 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]orkspace' },
         { '<leader>t', group = '[T]oggle / [T]ab' },
+        { '<leader>g', group = '[G]o Live' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>n', group = '[N]o [H]ighlight' },
         { '<leader>x', group = '[X] Trouble List' },
@@ -480,8 +530,8 @@ require('lazy').setup({
     },
   },
   { 'Bilal2453/luvit-meta', lazy = true },
-  {
-    -- Main LSP Configuration
+  { -- Main LSP Configuration
+
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
@@ -653,7 +703,7 @@ require('lazy').setup({
         html = {},
         cssls = {},
         cssmodules_ls = {},
-
+        -- eslint = {},
         emmet_ls = {},
 
         lua_ls = {
@@ -752,6 +802,8 @@ require('lazy').setup({
         html = { 'prettier' },
         css = { 'prettier' },
         javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        json = { 'prettier' },
       },
     },
   },
@@ -893,8 +945,7 @@ require('lazy').setup({
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
-  -- Custom Comment plugin
-  {
+  { -- Custom Comment plugin
     'numToStr/Comment.nvim',
     opts = {
       -- add any options here
@@ -917,27 +968,28 @@ require('lazy').setup({
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      -- require('mini.surround').setup()
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
+      -- local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      -- statusline.setup { use_icons = vim.g.have_nerd_font }
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
       -- cursor location to LINE:COLUMN
       ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
+      -- statusline.section_location = function()
+      -- return '%2l:%-2v'
+      -- end
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
+
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',

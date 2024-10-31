@@ -4,7 +4,7 @@
 -- See the kickstart.nvim README for more information
 ---@diagnostic disable unused-local
 return {
-  {
+  { -- NOTE: Nvim Surround
     'kylechui/nvim-surround',
     version = '*', -- Use for stability; omit to use `main` branch for the latest features
     event = 'VeryLazy',
@@ -15,7 +15,7 @@ return {
     end,
   },
 
-  { -- Not UFO in the sky, but an ultra fold in Neovim.
+  { -- NOTE: Nvim UFO Code folding
     'kevinhwang91/nvim-ufo',
     dependencies = {
       'kevinhwang91/promise-async',
@@ -51,24 +51,82 @@ return {
     },
   },
 
-  -- { -- Neovim statusline
-  --   'nvim-lualine/lualine.nvim',
-  --   dependencies = { 'nvim-tree/nvim-web-devicons' },
-  --   config = function()
-  --     require('lualine').setup {
-  --       options = {
-  --         theme = 'dracula',
-  --       },
-  --     }
-  --   end,
-  -- },
-
-  { -- Codium integration
-    'Exafunction/codeium.vim',
-    event = 'BufEnter',
+  { -- NOTE: Nvim Statusline
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      require('lualine').setup {
+        options = {
+          theme = 'dracula',
+        },
+      }
+    end,
   },
 
-  { -- Automated session manager
+  { -- NOTE: Codeium integration
+    'Exafunction/codeium.vim',
+    event = 'BufEnter',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'hrsh7th/nvim-cmp',
+    },
+    config = function()
+      -- Hide Codeium when cmp is open
+      if vim.g.codeium_cmp_hide == true then
+        local cmp = require 'cmp'
+        cmp.event:on('menu_opened', function()
+          vim.g.codeium_manual = true
+          vim.fn['codeium#Clear']()
+        end)
+        cmp.event:on('menu_closed', function()
+          vim.g.codeium_manual = false
+          vim.fn['codeium#Complete']()
+        end)
+      end
+
+      -- Set file types
+      vim.g.codeium_filetypes = {
+        TelescopePrompt = false,
+        DressingInput = false,
+        ['neo-tree-popup'] = false,
+        ['dap-repl'] = false,
+      }
+
+      -- Disable default bindings
+      vim.g.codeium_disable_bindings = 1
+
+      local opts = { expr = true, silent = true }
+
+      -- Keybinds
+      vim.keymap.set('i', '<M-CR>', function()
+        return vim.fn['codeium#Accept']()
+      end, opts)
+
+      vim.keymap.set('i', '<M-]>', function()
+        return vim.fn['codeium#CycleOrComplete']()
+      end, opts)
+
+      vim.keymap.set('i', '<M-[>', function()
+        return vim.fn['codeium#CycleCompletions'](-1)
+      end, opts)
+
+      vim.keymap.set('i', '<M-c>', function()
+        return vim.fn['codeium#Clear']()
+      end, opts)
+
+      vim.keymap.set('i', '<M-right>', function()
+        return vim.fn['codeium#AcceptNextWord']()
+      end, opts)
+
+      vim.keymap.set('i', '<M-down>', function()
+        return vim.fn['codeium#AcceptNextLine']()
+      end, opts)
+
+      vim.keymap.set('n', '<leader>cI', '<cmd>CodeiumToggle<cr>', { desc = 'Toggle IA (Codeium)' })
+    end,
+  },
+
+  { -- NOTE: Automated session manager
     'rmagatti/auto-session',
     lazy = false,
     keys = {
@@ -86,7 +144,7 @@ return {
     },
   },
 
-  { -- Tab styling
+  { -- NOTE: Tab styling
     'akinsho/bufferline.nvim',
     version = '*',
     dependencies = 'nvim-tree/nvim-web-devicons',
@@ -98,14 +156,14 @@ return {
     },
   },
 
-  { -- dress default vim.ui
+  { -- NOTE: Nvim UI
     'stevearc/dressing.nvim',
     event = 'VeryLazy',
     opts = { -- your config here
     },
   },
 
-  { -- Maximizes and restores the current window size
+  { -- NOTE: Window maximizer
     'szw/vim-maximizer',
     event = 'VeryLazy',
     config = function()
@@ -113,7 +171,7 @@ return {
     end,
   },
 
-  { -- Plugin to quickly replace and exchange text
+  { -- NOTE: Substitute
     'gbprod/substitute.nvim',
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
@@ -125,7 +183,7 @@ return {
     end,
   },
 
-  { -- trouble.nvim
+  { -- NOTE: trouble.nvim
     'folke/trouble.nvim',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
@@ -163,7 +221,53 @@ return {
         '<cmd>Trouble qflist toggle<cr>',
         desc = 'Quickfix List (Trouble)',
       },
+      {
+        '<leader>xt',
+        '<cmd>Trouble todo toggle<cr>',
+        desc = 'Toggle Trouble',
+      },
     },
     opts = {},
+  },
+
+  { -- NOTE: Live server
+    'barrett-ruth/live-server.nvim',
+    cmd = { 'LiveServerStart', 'LiveServerStop' },
+    config = true,
+    keys = {
+      { '<leader>gl', '<cmd>LiveServerStart<cr>', desc = 'Start live server' },
+      { '<leader>gL', '<cmd>LiveServerStop<cr>', desc = 'Stop live server' },
+    },
+    opts = {},
+  },
+
+  { -- NOTE: Dashboard
+    'goolord/alpha-nvim',
+    -- dependencies = { 'echasnovski/mini.icons' },
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      local startify = require 'alpha.themes.startify'
+      -- available: devicons, mini, default is mini
+      -- if provider not loaded and enabled is true, it will try to use another provider
+      startify.file_icons.provider = 'devicons'
+      startify.section.header.val = {
+        [[                                                                       ]],
+        [[                                                                       ]],
+        [[                                                                       ]],
+        [[                                                                       ]],
+        [[                                                                     ]],
+        [[       ████ ██████           █████      ██                     ]],
+        [[      ███████████             █████                             ]],
+        [[      █████████ ███████████████████ ███   ███████████   ]],
+        [[     █████████  ███    █████████████ █████ ██████████████   ]],
+        [[    █████████ ██████████ █████████ █████ █████ ████ █████   ]],
+        [[  ███████████ ███    ███ █████████ █████ █████ ████ █████  ]],
+        [[ ██████  █████████████████████ ████ █████ █████ ████ ██████ ]],
+        [[                                                                       ]],
+        [[                                                                       ]],
+        [[                                                                       ]],
+      }
+      require('alpha').setup(startify.config)
+    end,
   },
 }
