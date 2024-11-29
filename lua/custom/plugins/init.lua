@@ -238,7 +238,9 @@ return {
       { '<leader>gl', '<cmd>LiveServerStart<cr>', desc = 'Start live server' },
       { '<leader>gL', '<cmd>LiveServerStop<cr>', desc = 'Stop live server' },
     },
-    opts = {},
+    opts = {
+      args = { '--port=5555', '--host=192.168.0.105', '--no-browser' },
+    },
   },
 
   { -- NOTE: Dashboard

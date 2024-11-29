@@ -985,6 +985,14 @@ require('lazy').setup({
       -- return '%2l:%-2v'
       -- end
 
+      -- RGB Coloring with mini.hipatterns
+      local hipatterns = require 'mini.hipatterns'
+      hipatterns.setup {
+        highlighters = {
+          hex_color = hipatterns.gen_highlighter.hex_color(),
+        },
+      }
+
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
