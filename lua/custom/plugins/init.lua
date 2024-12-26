@@ -57,7 +57,7 @@ return {
     config = function()
       require('lualine').setup {
         options = {
-          theme = 'dracula',
+          theme = 'auto',
         },
       }
     end,
@@ -65,6 +65,7 @@ return {
 
   { -- NOTE: Codeium integration
     'Exafunction/codeium.vim',
+    enabled = false,
     event = 'BufEnter',
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -123,6 +124,34 @@ return {
       end, opts)
 
       vim.keymap.set('n', '<leader>cI', '<cmd>CodeiumToggle<cr>', { desc = 'Toggle IA (Codeium)' })
+    end,
+  },
+
+  { --NOTE: Github Copilot integration
+    'github/copilot.vim',
+    event = 'BufEnter',
+    config = function()
+      -- Options
+      vim.g.copilot_no_tab_map = true
+      vim.b.copilot_enabled = false
+
+      -- Set file types
+      vim.g.copilot_filetypes = {
+        ['*'] = false,
+        ['lua'] = true,
+        ['css'] = true,
+        ['html'] = true,
+        ['javascript'] = false,
+        ['typescript'] = false,
+      }
+
+      -- Keybinds
+      local opts = { expr = true, replace_keycodes = false }
+
+      vim.keymap.set('i', '<C-r>', 'copilot#Accept("<cr>")', opts)
+      vim.keymap.set('i', '<C-e>', 'copilot#AcceptWord()', opts)
+      vim.keymap.set('n', '<leader>Ce', '<cmd>Copilot enable<cr>', { desc = 'Enable Copilot' })
+      vim.keymap.set('n', '<leader>Cd', '<cmd>Copilot disable<cr>', { desc = 'Disable Copilot' })
     end,
   },
 
