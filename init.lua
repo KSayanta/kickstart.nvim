@@ -265,6 +265,9 @@ vim.keymap.set('n', 'go', "<Cmd>call append(line('.'), repeat([''], v:count1))<C
 -- U for redo
 vim.keymap.set('n', 'U', '<C-r>', { desc = 'Redo' })
 
+-- Save without formatting
+vim.keymap.set('n', '<A-s>', '<cmd>noautocmd w<CR>', { desc = 'Save Without Formatting' })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -885,7 +888,7 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          ['<Tab>'] = cmp.mapping.confirm { select = true },
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
@@ -921,14 +924,15 @@ require('lazy').setup({
           --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
         },
         sources = {
-          {
-            name = 'lazydev',
-            -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
-            group_index = 0,
-          },
-          { name = 'nvim_lsp' },
-          { name = 'luasnip' },
-          { name = 'path' },
+          { name = 'lazydev', group_index = 0 },
+
+          -- Copilot Source
+          { name = 'copilot', group_index = 2 },
+
+          -- Other Source
+          { name = 'nvim_lsp', group_index = 2 },
+          { name = 'luasnip', group_index = 2 },
+          { name = 'path', group_index = 2 },
         },
       }
     end,

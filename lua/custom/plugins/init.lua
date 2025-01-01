@@ -51,6 +51,10 @@ return {
     },
   },
 
+  { --NOTE: copilot lualine
+    'AndreM222/copilot-lualine',
+  },
+
   { -- NOTE: Nvim Statusline
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -58,6 +62,9 @@ return {
       require('lualine').setup {
         options = {
           theme = 'auto',
+        },
+        sections = {
+          lualine_x = { 'copilot', 'encoding', 'fileformat', 'filetype' },
         },
       }
     end,
@@ -129,6 +136,7 @@ return {
 
   { --NOTE: Github Copilot integration
     'github/copilot.vim',
+    enabled = false,
     event = 'BufEnter',
     config = function()
       -- Options
@@ -152,6 +160,30 @@ return {
       vim.keymap.set('i', '<C-e>', 'copilot#AcceptWord()', opts)
       vim.keymap.set('n', '<leader>Ce', '<cmd>Copilot enable<cr>', { desc = 'Enable Copilot' })
       vim.keymap.set('n', '<leader>Cd', '<cmd>Copilot disable<cr>', { desc = 'Disable Copilot' })
+    end,
+  },
+
+  { --NOTE: Github Copilot integration with lua
+    'zbirenbaum/copilot.lua',
+    enabled = true,
+    cmd = 'Copilot',
+    event = 'BufEnter',
+    config = function()
+      require('copilot').setup {
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+      }
+
+      -- Keymaps
+      vim.keymap.set('n', '<leader>Ce', '<cmd>Copilot enable<cr>', { desc = 'Enable Copilot' })
+      vim.keymap.set('n', '<leader>Cd', '<cmd>Copilot disable<cr>', { desc = 'Disable Copilot' })
+    end,
+  },
+
+  { --NOTE: Github Copilot cmp
+    'zbirenbaum/copilot-cmp',
+    config = function()
+      require('copilot_cmp').setup()
     end,
   },
 
