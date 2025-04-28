@@ -717,7 +717,10 @@ require('lazy').setup({
         cssls = {},
         cssmodules_ls = {},
         -- eslint = {},
-        emmet_ls = {},
+        emmet_ls = {
+          -- on_attach = on_attach,
+          filetypes = { 'css', 'eruby', 'html', 'javascript', 'javascriptreact', 'less', 'sass', 'scss', 'svelte', 'pug', 'typescriptreact', 'vue' },
+        },
 
         lua_ls = {
           -- cmd = {...},
@@ -729,7 +732,7 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },
@@ -752,7 +755,7 @@ require('lazy').setup({
         'prettierd', -- Used to format Javascript
 
         'eslint_d', -- Used to lint Javascript
-        'markdownlint', -- Used to lint Markdown
+        -- 'markdownlint', -- Used to lint Markdown
         'stylelint', -- Used to lint CSS
         'jsonlint', -- Used to lint JSON
         'vale', -- Used to lint text
@@ -807,6 +810,7 @@ require('lazy').setup({
         }
       end,
       formatters_by_ft = {
+        -- ['*'] = { 'injected' },
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
@@ -814,9 +818,42 @@ require('lazy').setup({
         -- You can use 'stop_after_first' to run the first available formatter from the list
         html = { 'prettier' },
         css = { 'prettier' },
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = { 'prettierd', 'injected' },
+        typescript = { 'prettierd', 'injected' },
         json = { 'prettier' },
+        md = { 'prettier', 'injected' },
+        svg = { 'xmlformat' },
+        xml = { 'xmlformat' },
+      },
+
+      formatters = {
+        injected = {
+          options = {
+            -- Set to true to ignore errors
+            ignore_errors = false,
+            -- Map of treesitter language to filetype
+            lang_to_ft = {
+              bash = 'sh',
+            },
+            -- Map of treesitter language to file extension
+            -- A temporary file name with this extension will be generated during formatting
+            -- because some formatters care about the filename.
+            lang_to_ext = {
+              bash = 'sh',
+              c_sharp = 'cs',
+              elixir = 'exs',
+              javascript = 'js',
+              julia = 'jl',
+              latex = 'tex',
+              markdown = 'md',
+              python = 'py',
+              ruby = 'rb',
+              rust = 'rs',
+              teal = 'tl',
+              typescript = 'ts',
+            },
+          },
+        },
       },
     },
   },
