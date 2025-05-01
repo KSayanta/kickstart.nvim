@@ -3,6 +3,17 @@
 --
 -- See the kickstart.nvim README for more information
 ---@diagnostic disable unused-local
+local args = function()
+  -- Get host ip address for live server
+  local host = '--host=' .. table.concat(vim.system({ 'hostname', '-I' }, { text = true }))
+  return {
+    '--port=5555',
+    host,
+    '--no-browser',
+    '--quiet',
+  }
+end
+
 return {
   { -- NOTE: Nvim Surround
     'kylechui/nvim-surround',
@@ -300,7 +311,7 @@ return {
       { '<leader>gL', '<cmd>LiveServerStop<cr>', desc = 'Stop live server' },
     },
     opts = {
-      args = { '--port=5555', '--host=192.168.0.105', '--no-browser' },
+      args = args(),
     },
   },
 
