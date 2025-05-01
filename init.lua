@@ -268,6 +268,10 @@ vim.keymap.set('n', 'U', '<C-r>', { desc = 'Redo' })
 -- Save without formatting
 vim.keymap.set('n', '<A-s>', '<cmd>noautocmd w<CR>', { desc = 'Save Without Formatting' })
 
+-- Navigate quickfix list
+vim.keymap.set('n', '<M-j>', '<cmd>cnext<CR>', { desc = 'Quickfix next item' })
+vim.keymap.set('n', '<M-k>', '<cmd>cprev<CR>', { desc = 'Quickfix prev item' })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -879,7 +883,8 @@ require('lazy').setup({
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
           {
-            'rafamadriz/friendly-snippets',
+            'KSayanta/friendly-snippets',
+            branch = 'test',
             config = function()
               require('luasnip.loaders.from_vscode').lazy_load()
             end,
@@ -893,14 +898,47 @@ require('lazy').setup({
       --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
+      'onsails/lspkind.nvim',
     },
     config = function()
       -- See `:help cmp`
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
+      local lspkind = require 'lspkind'
       luasnip.config.setup {}
 
       cmp.setup {
+        formatting = {
+          fields = { 'kind', 'abbr', 'menu' },
+          format = lspkind.cmp_format {
+            mode = 'symbol', -- show only symbol annotations
+            menu = {
+              buffer = '[Buffer]',
+              nvim_lsp = '[LSP]',
+              luasnip = '[LuaSnip]',
+              nvim_lua = '[Lua]',
+              path = '[Path]',
+              cmp_git = '[Git]',
+            },
+            maxwidth = {
+              -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+              -- can also be a function to dynamically calculate max width such as
+              -- menu = function() return math.floor(0.45 * vim.o.columns) end,
+              menu = 50, -- leading text (labelDetails)
+              abbr = 50, -- actual suggestion item
+            },
+            ellipsis_char = '...', -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+            show_labelDetails = true, -- show labelDetails in menu. Disabled by default
+
+            -- The function below will be called before any actual modifications from lspkind
+            -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
+            -- before = function(_, vim_item)
+            -- ...
+            -- return vim_item
+            -- end,
+          },
+        },
+
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -960,16 +998,21 @@ require('lazy').setup({
           -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
           --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
         },
+
+        -- The order of sources is what determines which source goes where in the pop-up menu
+        --
+        -- The group_index is used to group sources together and control their order of appearance
+        -- in the completion menu.
+        --
+        -- When you set the group_index for a source, it helps to organize the sources into groups,
+        -- and the order of these groups can be controlled with priority
         sources = {
           { name = 'lazydev', group_index = 0 },
-
-          -- Copilot Source
-          { name = 'copilot', group_index = 2 },
-
-          -- Other Source
-          { name = 'nvim_lsp', group_index = 2 },
           { name = 'luasnip', group_index = 2 },
+          { name = 'nvim_lsp', group_index = 2 },
           { name = 'path', group_index = 2 },
+          { name = 'copilot', group_index = 3, priority = 2 },
+          { name = 'tabnine', group_index = 3, priority = 1 },
         },
       }
     end,
