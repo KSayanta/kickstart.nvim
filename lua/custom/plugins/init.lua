@@ -316,11 +316,11 @@ return {
     -- dependencies = { 'echasnovski/mini.icons' },
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
-      local startify = require 'alpha.themes.startify'
+      local theta = require 'alpha.themes.theta'
       -- available: devicons, mini, default is mini
       -- if provider not loaded and enabled is true, it will try to use another provider
-      startify.file_icons.provider = 'devicons'
-      startify.section.header.val = {
+      theta.file_icons.provider = 'devicons'
+      theta.header.val = {
         [[                                                                       ]],
         [[                                                                       ]],
         [[                                                                       ]],
@@ -337,10 +337,10 @@ return {
         [[                                                                       ]],
         [[                                                                       ]],
       }
-      require('alpha').setup(startify.config)
+      require('alpha').setup(theta.config)
     end,
   },
-  {
+  { -- NOTE: yazi
     ---@type LazySpec
     'mikavilpas/yazi.nvim',
     event = 'VeryLazy',
@@ -349,20 +349,20 @@ return {
     },
     keys = {
       {
-        '<c-up>',
+        '<leader>O',
         mode = { 'n', 'v' },
         '<cmd>Yazi<cr>',
-        desc = 'Open yazi at the current file',
+        desc = 'Yazi: Open yazi at the current file',
       },
       {
         '<leader>wo',
         '<cmd>Yazi cwd<cr>',
-        desc = 'Yazi: [W]orkspace [O]pen',
+        desc = 'Yazi: [W]orkspace [O]pen cwd',
       },
       {
         '<leader>o',
         '<cmd>Yazi toggle<cr>',
-        desc = 'Resume the last yazi session',
+        desc = 'Yazi: Toggle the last yazi session',
       },
     },
     ---@type YaziConfig | {}

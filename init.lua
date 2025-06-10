@@ -405,7 +405,6 @@ require('lazy').setup({
         { '<leader>t', group = '[T]oggle / [T]ab' },
         { '<leader>g', group = '[G]o Live' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-        { '<leader>n', group = '[N]o [H]ighlight' },
         { '<leader>x', group = '[X] Trouble List' },
       },
     },
@@ -1100,6 +1099,9 @@ require('lazy').setup({
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+    dependencies = {
+      'windwp/nvim-ts-autotag',
+    },
     opts = {
       ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
@@ -1115,10 +1117,10 @@ require('lazy').setup({
       incremental_selection = {
         enable = true,
         keymaps = {
-          init_selection = 'gnn',
-          node_incremental = 'grn',
-          scope_incremental = 'grc',
-          node_decremental = 'grm',
+          init_selection = '<C-space>',
+          node_incremental = '<C-space>',
+          scope_incremental = false,
+          node_decremental = '<bs>',
         },
       },
       autotag = {
