@@ -1035,6 +1035,13 @@ require('lazy').setup({
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
+      vim.cmd.hi 'Normal guibg=NONE ctermbg=NONE'
+      vim.cmd.hi 'CursorLine guibg=NONE ctermbg=NONE'
+    end,
+    opts = function()
+      return {
+        transparent = true,
+      }
     end,
   },
 

@@ -1,14 +1,4 @@
 ---@diagnostic disable unused-local
-local args = function()
-  -- Get host ip address for live server
-  local host = '--host=' .. table.concat(vim.system({ 'hostname', '-I' }, { text = true }))
-  return {
-    '--port=5555',
-    host,
-    '--no-browser',
-    '--quiet',
-  }
-end
 
 return {
   { -- NOTE: Nvim Surround
@@ -219,7 +209,7 @@ return {
     opts = {
       options = {
         mode = 'tabs',
-        separator_style = 'slant',
+        separator_style = 'thick',
       },
     },
   },
@@ -307,7 +297,17 @@ return {
       { '<leader>gL', '<cmd>LiveServerStop<cr>', desc = 'Stop live server' },
     },
     opts = {
-      args = args(),
+      args = function()
+        -- Get host ip address for live server
+        -- Require inetutils installed for hostname command
+        local host = '--host=' .. table.concat(vim.system({ 'hostname', '-I' }, { text = true }))
+        return {
+          '--port=5555',
+          host,
+          '--no-browser',
+          '--quiet',
+        }
+      end,
     },
   },
 
