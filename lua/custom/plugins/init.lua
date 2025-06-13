@@ -297,17 +297,17 @@ return {
       { '<leader>gL', '<cmd>LiveServerStop<cr>', desc = 'Stop live server' },
     },
     opts = {
-      args = function()
+      args = (function()
         -- Get host ip address for live server
         -- Require inetutils installed for hostname command
-        local host = '--host=' .. table.concat(vim.system({ 'hostname', '-I' }, { text = true }))
+        local host = '--host=' .. vim.system({ 'hostname', '-I' }, { text = true }):wait().stdout
         return {
           '--port=5555',
           host,
           '--no-browser',
           '--quiet',
         }
-      end,
+      end)(),
     },
   },
 
