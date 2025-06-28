@@ -48,10 +48,6 @@ return {
     },
   },
 
-  { --NOTE: copilot lualine
-    'AndreM222/copilot-lualine',
-  },
-
   { -- NOTE: Nvim Statusline
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -61,126 +57,9 @@ return {
           theme = 'auto',
         },
         sections = {
-          lualine_x = { 'copilot', 'encoding', 'fileformat', 'filetype' },
+          lualine_x = { 'encoding', 'fileformat', 'filetype' },
         },
       }
-    end,
-  },
-
-  { -- NOTE: Codeium integration
-    'Exafunction/codeium.vim',
-    enabled = false,
-    event = 'BufEnter',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'hrsh7th/nvim-cmp',
-    },
-    config = function()
-      -- Hide Codeium when cmp is open
-      if vim.g.codeium_cmp_hide == true then
-        local cmp = require 'cmp'
-        cmp.event:on('menu_opened', function()
-          vim.g.codeium_manual = true
-          vim.fn['codeium#Clear']()
-        end)
-        cmp.event:on('menu_closed', function()
-          vim.g.codeium_manual = false
-          vim.fn['codeium#Complete']()
-        end)
-      end
-
-      -- Set file types
-      vim.g.codeium_filetypes = {
-        TelescopePrompt = false,
-        DressingInput = false,
-        ['neo-tree-popup'] = false,
-        ['dap-repl'] = false,
-      }
-
-      -- Disable default bindings
-      vim.g.codeium_disable_bindings = 1
-
-      local opts = { expr = true, silent = true }
-
-      -- Keybinds
-      vim.keymap.set('i', '<M-CR>', function()
-        return vim.fn['codeium#Accept']()
-      end, opts)
-
-      vim.keymap.set('i', '<M-]>', function()
-        return vim.fn['codeium#CycleOrComplete']()
-      end, opts)
-
-      vim.keymap.set('i', '<M-[>', function()
-        return vim.fn['codeium#CycleCompletions'](-1)
-      end, opts)
-
-      vim.keymap.set('i', '<M-c>', function()
-        return vim.fn['codeium#Clear']()
-      end, opts)
-
-      vim.keymap.set('i', '<M-right>', function()
-        return vim.fn['codeium#AcceptNextWord']()
-      end, opts)
-
-      vim.keymap.set('i', '<M-down>', function()
-        return vim.fn['codeium#AcceptNextLine']()
-      end, opts)
-
-      vim.keymap.set('n', '<leader>cI', '<cmd>CodeiumToggle<cr>', { desc = 'Toggle IA (Codeium)' })
-    end,
-  },
-
-  { --NOTE: Github Copilot integration
-    'github/copilot.vim',
-    enabled = false,
-    event = 'BufEnter',
-    config = function()
-      -- Options
-      vim.g.copilot_no_tab_map = true
-      vim.b.copilot_enabled = false
-
-      -- Set file types
-      vim.g.copilot_filetypes = {
-        ['*'] = false,
-        ['lua'] = true,
-        ['css'] = true,
-        ['html'] = true,
-        ['javascript'] = false,
-        ['typescript'] = false,
-      }
-
-      -- Keybinds
-      local opts = { expr = true, replace_keycodes = false }
-
-      vim.keymap.set('i', '<C-r>', 'copilot#Accept("<cr>")', opts)
-      vim.keymap.set('i', '<C-e>', 'copilot#AcceptWord()', opts)
-      vim.keymap.set('n', '<leader>Ce', '<cmd>Copilot enable<cr>', { desc = 'Enable Copilot' })
-      vim.keymap.set('n', '<leader>Cd', '<cmd>Copilot disable<cr>', { desc = 'Disable Copilot' })
-    end,
-  },
-
-  { --NOTE: Github Copilot integration with lua
-    'zbirenbaum/copilot.lua',
-    enabled = true,
-    cmd = 'Copilot',
-    event = 'BufEnter',
-    config = function()
-      require('copilot').setup {
-        suggestion = { enabled = false },
-        panel = { enabled = false },
-      }
-
-      -- Keymaps
-      vim.keymap.set('n', '<leader>Ce', '<cmd>Copilot enable<cr>', { desc = 'Enable Copilot' })
-      vim.keymap.set('n', '<leader>Cd', '<cmd>Copilot disable<cr>', { desc = 'Disable Copilot' })
-    end,
-  },
-
-  { --NOTE: Github Copilot cmp
-    'zbirenbaum/copilot-cmp',
-    config = function()
-      require('copilot_cmp').setup()
     end,
   },
 
