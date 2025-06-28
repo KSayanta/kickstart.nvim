@@ -93,9 +93,6 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
--- Codeium auto hide flag
-vim.g.codeium_cmp_hide = true
-
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
@@ -238,16 +235,8 @@ vim.keymap.set('n', '<leader>wv', '<C-w>v', { desc = 'Split [W]indow [V]erticall
 vim.keymap.set('n', '<leader>wh', '<C-w>s', { desc = 'Split [W]indow [H]orizontally' })
 vim.keymap.set('n', '<leader>we', '<C-w>=', { desc = 'Split [W]indow [E]qual size' })
 vim.keymap.set('n', '<leader>wq', '<cmd>close<CR>', { desc = 'Split [W]indow [Q]lose' })
-
--- Tab management
-vim.keymap.set('n', '<leader>tn', '<cmd>tabnew<CR>', { desc = 'Tab [N]ew' })
-vim.keymap.set('n', '<leader>tc', '<cmd>tabclose<CR>', { desc = 'Tab [C]lose' })
-vim.keymap.set('n', '<leader>to', '<cmd>tabnew %<CR>', { desc = 'Tab [O]pen current buffer' })
-
--- Buffer management
-vim.keymap.set('n', '<leader>bf', '<cmd>bfirst<cr>', { desc = 'First Buffer' })
-vim.keymap.set('n', '<leader>ba', '<cmd>blast<cr>', { desc = 'Last Buffer' })
-vim.keymap.set('n', '<leader>b<tab>', '<cmd>tabnew %<cr>', { desc = 'Current Buffer in New Tab' })
+vim.keymap.set('n', '<leader>wn', '<cmd>tabnew<CR>', { desc = '[W]indow [N]ew' })
+vim.keymap.set('n', '<leader>wo', '<cmd>tabnew %<CR>', { desc = '[W]indow [O]pen current buffer' })
 
 -- Telescope
 vim.keymap.set('n', '<leader>st', '<cmd>TodoTelescope<CR>', { desc = '[S]earch [T]odos' })
@@ -266,10 +255,6 @@ vim.keymap.set('i', '<M-j>', '<down>', { desc = 'Move Cursor Left' })
 vim.keymap.set('i', '<M-k>', '<up>', { desc = 'Move Cursor Left' })
 vim.keymap.set('i', '<C-a>', '<Home>', { desc = 'Start Of Line' })
 vim.keymap.set('i', '<C-e>', '<End>', { desc = 'End Of Line' })
-
--- Empty Line
-vim.keymap.set('n', 'gO', "<Cmd>call append(line('.') - 1, repeat([''], v:count1))<CR>", { desc = 'Empty Line Above' })
-vim.keymap.set('n', 'go', "<Cmd>call append(line('.'), repeat([''], v:count1))<CR>", { desc = 'Empty Line Below' })
 
 -- U for redo
 vim.keymap.set('n', 'U', '<C-r>', { desc = 'Redo' })
