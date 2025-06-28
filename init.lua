@@ -1039,6 +1039,7 @@ require('lazy').setup({
         styles = {
           comments = { italic = false }, -- Disable italics in comments
         },
+        transparent = vim.g.transparent_enabled,
       }
 
       -- Load the colorscheme here.
@@ -1046,16 +1047,10 @@ require('lazy').setup({
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme 'tokyonight-night'
 
+      -- Custom theme opts
       -- vim.cmd.hi 'Comment gui=none'
-
-      -- transparency
-      vim.cmd.hi 'Normal guibg=NONE ctermbg=NONE'
-      vim.cmd.hi 'CursorLine guibg=NONE ctermbg=NONE'
-    end,
-    opts = function()
-      return {
-        transparent = true,
-      }
+      -- vim.cmd.hi 'Normal guibg=NONE ctermbg=NONE'
+      -- vim.cmd.hi 'CursorLine guibg=NONE ctermbg=NONE'
     end,
   },
 

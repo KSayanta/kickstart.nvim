@@ -219,6 +219,7 @@ return {
       require('alpha').setup(theta.config)
     end,
   },
+
   { -- NOTE: yazi
     ---@type LazySpec
     'mikavilpas/yazi.nvim',
@@ -257,6 +258,21 @@ return {
       -- More details: https://github.com/mikavilpas/yazi.nvim/issues/802
       -- vim.g.loaded_netrw = 1
       vim.g.loaded_netrwPlugin = 1
+    end,
+  },
+
+  { -- NOTE: Transparent nvim
+    'xiyaowong/transparent.nvim',
+
+    config = function()
+      require('transparent').setup {
+        -- config here
+      }
+      require('transparent').clear_prefix 'BufferLine'
+      -- require('transparent').clear_prefix 'NeoTree'
+      -- require('transparent').clear_prefix 'lualine'
+
+      vim.keymap.set('n', '<leader>tt', '<Cmd>TransparentToggle<CR>', { desc = '[T]oggle [T]ransparent UI' })
     end,
   },
 }
