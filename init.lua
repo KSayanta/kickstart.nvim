@@ -757,14 +757,42 @@ require('lazy').setup({
         -- My Language Servers (My LSP)
         -- HTML, CSS Language Server
         -- https://github.com/hrsh7th/vscode-langservers-extracted
-        -- https://github.com/antonk52/cssmodules-language-server
         html = {},
-        cssls = {},
-        cssmodules_ls = {},
-        -- eslint = {},
+        cssls = {
+          settings = {
+            css = { lint = { unknownAtRules = 'ignore' } },
+          },
+        },
+
+        -- https://github.com/antonk52/cssmodules-language-server
+        cssmodules_ls = {
+          on_attach = function(client)
+            client.server_capabilities.definitionProvider = false
+          end,
+        },
+
+        -- https://github.com/vunguyentuan/vscode-css-variables
+        css_variables = {},
+
+        -- https://github.com/tailwindlabs/tailwindcss-intellisense
+        tailwindcss = {},
+
         emmet_ls = {
-          -- on_attach = on_attach,
-          filetypes = { 'css', 'eruby', 'html', 'javascript', 'javascriptreact', 'less', 'sass', 'scss', 'svelte', 'pug', 'typescriptreact', 'vue' },
+          filetypes = {
+            'css',
+            'eruby',
+            'html',
+            'javascript',
+            'javascriptreact',
+            'less',
+            'sass',
+            'scss',
+            'svelte',
+            'pug',
+            'typescript',
+            'typescriptreact',
+            'vue',
+          },
         },
 
         lua_ls = {
@@ -904,7 +932,6 @@ require('lazy').setup({
               rust = 'rs',
               teal = 'tl',
               typescript = 'ts',
-              typescriptreact = 'tsx',
             },
           },
         },
