@@ -652,6 +652,7 @@ require('lazy').setup({
             if vim.fn.has 'nvim-0.11' == 1 then
               return client:supports_method(method, bufnr)
             else
+              ---@diagnostic disable-next-line param-type-mismatch
               return client.supports_method(method, { bufnr = bufnr })
             end
           end
@@ -1002,7 +1003,7 @@ require('lazy').setup({
 
         ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
         ['<C-e>'] = { 'hide' },
-        ['<Tab>'] = { 'select_and_accept' },
+        ['<Tab>'] = { 'select_and_accept', 'fallback' },
 
         ['<Up>'] = { 'select_prev', 'fallback' },
         ['<Down>'] = { 'select_next', 'fallback' },
@@ -1031,12 +1032,24 @@ require('lazy').setup({
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
         documentation = { auto_show = false, auto_show_delay_ms = 500 },
+
+        -- nvim-cmp style completion
+        menu = {
+          draw = {
+            columns = { { 'kind_icon' }, { 'label', 'label_description', gap = 1 }, { 'source_name' } },
+          },
+        },
       },
 
       sources = {
         default = { 'lsp', 'path', 'snippets', 'lazydev' },
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
+          snippets = { max_items = 3 },
+        },
+        per_filetype = {
+          javascript = { inherit_defaults = false, 'lsp', 'buffer', 'path' },
+          typescript = { inherit_defaults = false, 'lsp', 'buffer', 'path' },
         },
       },
 
@@ -1052,7 +1065,8 @@ require('lazy').setup({
       fuzzy = { implementation = 'lua' },
 
       -- Shows a signature help window while you type arguments for a function
-      signature = { enabled = true },
+      -- Toggle with <C-k>
+      signature = { enabled = false },
     },
   },
 
@@ -1089,9 +1103,16 @@ require('lazy').setup({
 
   { -- Custom Comment plugin
     'numToStr/Comment.nvim',
-    opts = {
-      -- add any options here
-    },
+    dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
+
+    config = function()
+      require('ts_context_commentstring').setup()
+
+      ---@diagnostic disable-next-line: missing-fields
+      require('Comment').setup {
+        pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+      }
+    end,
   },
 
   { -- Collection of various small independent plugins/modules
@@ -1127,13 +1148,20 @@ require('lazy').setup({
       -- return '%2l:%-2v'
       -- end
 
-      -- RGB Coloring with mini.hipatterns
-      local hipatterns = require 'mini.hipatterns'
-      hipatterns.setup {
-        highlighters = {
-          hex_color = hipatterns.gen_highlighter.hex_color(),
-        },
-      }
+      -- Todo Comment Coloring with mini.hipatterns
+      -- local hipatterns = require 'mini.hipatterns'
+      -- hipatterns.setup {
+      --   highlighters = {
+      --     -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
+      --     fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
+      --     hack = { pattern = '%f[%w]()HACK()%f[%W]', group = 'MiniHipatternsHack' },
+      --     todo = { pattern = '%f[%w]()TODO()%f[%W]', group = 'MiniHipatternsTodo' },
+      --     note = { pattern = '%f[%w]()NOTE()%f[%W]', group = 'MiniHipatternsNote' },
+      --
+      --     -- Highlight hex color strings (`#rrggbb`) using that color
+      --     hex_color = hipatterns.gen_highlighter.hex_color(),
+      --   },
+      -- }
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
