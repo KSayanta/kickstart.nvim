@@ -292,4 +292,24 @@ return {
     ---@type oklch.Opts
     opts = {},
   },
+
+  { --NOTE: flash.nvim
+    'folke/flash.nvim',
+    event = 'VeryLazy',
+
+    ---@type Flash.Config
+    opts = {
+      modes = {
+        search = { enabled = true },
+        char = { jump_labels = true },
+      },
+    },
+
+    keys = {
+      { '<leader>gf', mode = { 'n', 'x', 'o' }, "<cmd>lua require('flash').jump()<cr>", desc = 'Flash' },
+      { '<leader>gF', mode = { 'n', 'x', 'o' }, "<cmd>lua require('flash').treesitter()<cr>", desc = 'Flash Treesitter' },
+      { 'r', mode = 'o', "<cmd>lua require('flash').remote()<cr>", desc = 'Remote Flash' },
+      { 'R', mode = { 'o', 'x' }, "<cmd>lua require('flash').treesitter_search()<cr>", desc = 'Treesitter Search' },
+    },
+  },
 }
