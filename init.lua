@@ -159,7 +159,7 @@ vim.o.inccommand = 'split'
 vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 10
+vim.o.scrolloff = 6
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -283,6 +283,16 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
     vim.hl.on_yank()
+  end,
+})
+
+-- Markdown wrap
+vim.api.nvim_create_autocmd('BufWinEnter', {
+  desc = 'Enable line wrap in markdown files',
+  pattern = { '*.md', '*.mdx' },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.textwidth = 80
   end,
 })
 
@@ -901,7 +911,8 @@ require('lazy').setup({
         typescriptreact = { 'prettierd', 'injected' },
         json = { 'prettier' },
         jsonc = { 'prettier' },
-        md = { 'prettier', 'injected' },
+        md = { 'prettierd', 'injected' },
+        mdx = { 'prettierd', 'injected' },
         svg = { 'xmlformat' },
         xml = { 'xmlformat' },
       },
