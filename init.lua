@@ -190,7 +190,7 @@ vim.o.smoothscroll = true
 
 -- Clear highlights on search when pressing <leader>nh in normal mode
 --  See `:help hlsearch`
-vim.keymap.set('n', '<leader>nh', '<cmd>nohlsearch<CR>')
+vim.keymap.set('n', '<leader>nh', '<cmd>No Hlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -265,6 +265,9 @@ vim.keymap.set('n', '<A-s>', '<cmd>noautocmd w<CR>', { desc = 'Save Without Form
 -- Navigate quickfix list
 vim.keymap.set('n', '<M-j>', '<cmd>cnext<CR>', { desc = 'Quickfix next item' })
 vim.keymap.set('n', '<M-k>', '<cmd>cprev<CR>', { desc = 'Quickfix prev item' })
+
+-- Delete comment strings
+vim.keymap.set('n', '<leader>nc', '<cmd>%g?^\\s*//.*$?d<CR>', { desc = 'No Comment' })
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -762,13 +765,14 @@ require('lazy').setup({
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
         --
-        -- But for many setups, the LSP (`ts_ls`) will work just fine
+
+        -- https://github.com/typescript-language-server/typescript-language-server
         ts_ls = {},
 
-        -- My Language Servers (My LSP)
-        -- HTML, CSS Language Server
         -- https://github.com/hrsh7th/vscode-langservers-extracted
         html = {},
+
+        -- https://github.com/microsoft/vscode-css-languageservice
         cssls = {
           settings = {
             css = { lint = { unknownAtRules = 'ignore' } },
@@ -786,25 +790,18 @@ require('lazy').setup({
         css_variables = {},
 
         -- https://github.com/tailwindlabs/tailwindcss-intellisense
-        tailwindcss = {},
-
-        emmet_ls = {
-          filetypes = {
-            'css',
-            'eruby',
-            'html',
-            'javascript',
-            'javascriptreact',
-            'less',
-            'sass',
-            'scss',
-            'svelte',
-            'pug',
-            'typescript',
-            'typescriptreact',
-            'vue',
-          },
+        tailwindcss = {
+          classFunctions = { 'cva', 'cx' },
         },
+
+        -- https://github.com/withastro/language-tools
+        astro = {},
+
+        -- https://github.com/mdx-js/mdx-analyzer/tree/main/packages/language-server
+        mdx_analyzer = {},
+
+        -- https://github.com/olrtg/emmet-language-server
+        emmet_language_server = {},
 
         lua_ls = {
           -- cmd = { ... },
@@ -820,6 +817,9 @@ require('lazy').setup({
             },
           },
         },
+
+        -- https://github.com/zigtools/zls
+        zls = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -840,13 +840,14 @@ require('lazy').setup({
         'stylua', -- Used to format Lua code
         'prettier', -- Used to format HTML, CSS, Javascript
         'prettierd', -- Used to format Javascript
-
-        'eslint_d', -- Used to lint Javascript
+        'xmlformatter', -- Used to format xml / svg
+        -- 'eslint_d', -- Used to lint Javascript
         -- 'markdownlint', -- Used to lint Markdown
-        'stylelint', -- Used to lint CSS
-        'jsonlint', -- Used to lint JSON
-        'vale', -- Used to lint text
+        -- 'stylelint', -- Used to lint CSS
+        -- 'jsonlint', -- Used to lint JSON
+        -- 'vale', -- Used to lint text
       })
+
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
@@ -899,6 +900,7 @@ require('lazy').setup({
       formatters_by_ft = {
         -- ['*'] = { 'injected' },
         lua = { 'stylua' },
+        zig = { 'zig fmt' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
